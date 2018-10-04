@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
-import { subtleBoxShadow, lightBlueBackground, greenBoxShadow } from "./Style";
+import styled, { css } from 'styled-components';
+import { subtleBoxShadow, lightBlueBackground, redBoxShadow, greenBoxShadow } from "./Style";
 
 const CoinGrid = styled.div`
   display: grid;
@@ -17,6 +17,16 @@ const CoinTile = styled.div`
     cursor: pointer;
     ${greenBoxShadow}
   }
+  ${props => props.favorite && css`
+    &:hover{
+      cursor: pointer;
+      ${redBoxShadow}
+    }
+  `}
+`;
+
+const FavoriteCoin = CoinTile.extend`
+
 `;
 
 const CoinHeaderGrid = styled.div`
@@ -28,12 +38,13 @@ const CoinSymbol = styled.div`
   justify-self: right;
 `;
 
-export default function() {
+export default function(favorites=false) {
   console.log('CoinSample', this.state.coinList['BTC']);
+  let coinKeys = favorites ? this.state.favorites : Object.keys(this.state.coinList).slice(0,100);
   return( 
     <CoinGrid>
-      {Object.keys(this.state.coinList).slice(0,100).map(coin => 
-        <CoinTile>
+      {coinKeys.slice(0,100).map(coin => 
+        <CoinTile favorite={favorites}>
           <CoinHeaderGrid>        
             <div>{this.state.coinList[coin].CoinName}</div>
             <CoinSymbol>{this.state.coinList[coin].Symbol}</CoinSymbol>
