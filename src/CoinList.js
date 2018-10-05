@@ -43,7 +43,7 @@ export default function(favorites=false) {
   let coinKeys = favorites ? this.state.favorites : Object.keys(this.state.coinList).slice(0,100);
   return( 
     <CoinGrid>
-      {coinKeys.slice(0,100).map(coinKey => 
+      {coinKeys.map(coinKey => 
         <CoinTile 
           favorite={favorites} 
           onClick={favorites ? () => {this.removeCoinFromFavorites(coinKey)} : () =>{this.addCoinToFavorites(coinKey)}}>

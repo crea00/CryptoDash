@@ -72,7 +72,7 @@ class App extends Component {
   }
   addCoinToFavorites = (key) => {
     let favorites = [...this.state.favorites];
-    if (favorites.length = MAX_FAVORITES) {
+    if (favorites.length < MAX_FAVORITES) {
       favorites.push(key);
       this.setState({ favorites });
     }
