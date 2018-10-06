@@ -23,6 +23,10 @@ const CoinTile = styled.div`
       ${redBoxShadow}
     }
   `}
+  ${props => props.chosen && !props.favorite && css`
+    pointer-events: none;
+    opacity: 0.4;
+  ` }
 `;
 
 const FavoriteCoin = CoinTile.extend`
@@ -41,10 +45,11 @@ const CoinSymbol = styled.div`
 export default function(favorites=false) {
   console.log('CoinSample', this.state.coinList['BTC']);
   let coinKeys = favorites ? this.state.favorites : Object.keys(this.state.coinList).slice(0,100);
-  return( 
+  return ( 
     <CoinGrid>
       {coinKeys.map(coinKey => 
         <CoinTile 
+          chosen={this.isInFavorites(coinKey)}
           favorite={favorites} 
           onClick={favorites ? () => {this.removeCoinFromFavorites(coinKey)} : () =>{this.addCoinToFavorites(coinKey)}}>
           <CoinHeaderGrid>        
