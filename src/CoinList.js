@@ -18,7 +18,7 @@ const CoinTile = styled.div`
     ${greenBoxShadow}
   }
   ${props => props.favorite && css`
-    &:hover{
+    &:hover {
       cursor: pointer;
       ${redBoxShadow}
     }
@@ -26,11 +26,7 @@ const CoinTile = styled.div`
   ${props => props.chosen && !props.favorite && css`
     pointer-events: none;
     opacity: 0.4;
-  ` }
-`;
-
-const FavoriteCoin = CoinTile.extend`
-
+  `}
 `;
 
 const CoinHeaderGrid = styled.div`
@@ -40,6 +36,15 @@ const CoinHeaderGrid = styled.div`
 
 const CoinSymbol = styled.div`
   justify-self: right;
+`;
+
+const DeleteIcon = styled.div`
+  justify-self: right;
+  display: none;
+  ${CoinTile}:hover & {
+    display: block;
+    color: red;
+  }
 `;
 
 export default function(favorites=false) {
@@ -54,7 +59,9 @@ export default function(favorites=false) {
           onClick={favorites ? () => {this.removeCoinFromFavorites(coinKey)} : () =>{this.addCoinToFavorites(coinKey)}}>
           <CoinHeaderGrid>        
             <div>{this.state.coinList[coinKey].CoinName}</div>
-            <CoinSymbol>{this.state.coinList[coinKey].Symbol}</CoinSymbol>
+            {favorites ? 
+              <DeleteIcon>X</DeleteIcon> : 
+              <CoinSymbol>{this.state.coinList[coinKey].Symbol}</CoinSymbol>}
           </CoinHeaderGrid>
           <img 
             style={{ height: '50px' }} 
