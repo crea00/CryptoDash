@@ -6,6 +6,8 @@ import CoinList from './CoinList';
 import Search from './Search';
 import { ConfirmButton } from './Button';
 import _ from 'lodash';
+import fuzzy from 'fuzzy';
+
 const cc = require('cryptocompare');
 
 const AppLayout = styled.div`
@@ -96,6 +98,34 @@ class App extends Component {
     this.setState({ favorites: _.pull(favorites, key) });
   }
   isInFavorites = (key) => _.includes(this.state.favorites, key);
+  handleFilter = _.debounce((inputValue) =>  {
+    // Get all the coin symbols
+    let coinSymbols = Object.keys(this.state.coinList);
+    // Get all the coin names, maps symbol to name
+    let coinNames = coinSymbols.map(sym => this.state.coinList[sym].CoinName);
+    let allStringsToSearch = coinSymbols.concat(coinNames);
+    let fuzzyResults = fuzzy
+      .filter(inputValue, allStringsToSearch, {})
+      .map(result => result.string);
+    
+    let filteredCoins = _.pickBy(this.state.coinList, (result, symKey) => {
+      let coinName = result.CoinName;
+      // If our fuzzy results contains this symbol OR the coinName, include it (return true).
+      return _.includes(fuzzyResults, symKey) || _.includes(fuzzyResults, coinName);
+    });
+
+    this.setState({ filteredCoins });
+  }, 500)
+  filterCoins = (e) => {
+    let inputValue = _.get(e, 'target.value');
+    if(!inputValue) {
+      this.setState({
+        filteredCoins: null
+      });
+      return;
+    }
+    this.handleFilter(inputValue);
+  }
 
   render() {
     return (

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { subtleBoxShadow, lightBlueBackground, redBoxShadow, greenBoxShadow } from "./Style";
+import _ from 'lodash';
 
 const CoinGrid = styled.div`
   display: grid;
@@ -49,7 +50,10 @@ const DeleteIcon = styled.div`
 
 export default function(favorites=false) {
   console.log('CoinSample', this.state.coinList['BTC']);
-  let coinKeys = favorites ? this.state.favorites : Object.keys(this.state.coinList).slice(0,100);
+  let coinKeys = favorites ? 
+    this.state.favorites : 
+    ((this.state.filteredCoins && Object.keys(this.state.filteredCoins)) ||
+    Object.keys(this.state.coinList).slice(0, 100));
   return ( 
     <CoinGrid>
       {coinKeys.map(coinKey => 
