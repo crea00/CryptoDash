@@ -1,7 +1,7 @@
 import React from 'react';
 import styled,{ css } from 'styled-components';
 import { CoinGrid, CoinTile, CoinHeaderGrid, CoinSymbol } from './CoinList';
-import { fontSizeBig, fontSize3 } from "./Style";
+import { fontSizeBig, fontSize3, subtleBoxShadow, lightBlueBackground } from "./Style";
 
 const numberFormat = number => {
   return +(number + '').slice(0, 7);
@@ -26,11 +26,24 @@ const CoinTileCompact = CoinTile.extend`
   justify-items: right; 
 `;
 
+const PaddingBlue = styled.div`
+  ${subtleBoxShadow}
+  ${lightBlueBackground}
+  padding: 5px;
+`;
+
+const ChartGrid = styled.div`
+  display: grid;
+  margin-top: 15px;
+  grid-gap: 15px;
+  grid-template-columns: 1fr 3fr;
+`;
+
 export default function() {
   let self = this;
 
   return (
-    <CoinGrid>
+    [<CoinGrid>
       {this.state.prices.map(function(price, index) {
         let sym = Object.keys(price)[0];
         let data = price[sym]['USD'];
@@ -43,7 +56,7 @@ export default function() {
         return index < 5 ? (
           <CoinTile {...tileProps}> 
             <CoinHeaderGrid>        
-              <div>{sym}</div>
+              <div>{sym}</div> 
               <CoinSymbol>
                 <ChangePct red={data.CHANGEPCT24HOUR < 0}> 
                   {numberFormat(data.CHANGEPCT24HOUR)}% 
@@ -64,6 +77,19 @@ export default function() {
           </CoinTileCompact>
         );
       })}
-    </CoinGrid>
+    </CoinGrid>,
+    <ChartGrid>
+      <PaddingBlue>
+        <h2 style={{ textAlign: 'center' }}>{this.state.coinList[this.state.currentFavorite].CoinName}</h2>
+        <img 
+          style={{ height: '200px', display: 'block', margin: 'auto' }} 
+          src={`http://cryptocompare.com/${this.state.coinList[this.state.currentFavorite].ImageUrl}`}
+        />
+      </PaddingBlue>
+      <PaddingBlue>
+        Chart goes here...
+      </PaddingBlue>
+    </ChartGrid>
+    ]
   )
 }
