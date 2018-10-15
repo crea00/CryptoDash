@@ -3,6 +3,7 @@ import './App.css';
 import styled from 'styled-components';
 import _ from 'lodash';
 import fuzzy from 'fuzzy';
+import moment from 'moment';
 import AppBar from './AppBar';
 import CoinList from './CoinList';
 import Search from './Search';
@@ -25,6 +26,7 @@ export const CenterDiv = styled.div`
 `;
 
 const MAX_FAVORITES = 10;
+const TIME_UNITS = 10;
 
 const checkFirstVisit = () => {
   let cryptoDashData = JSON.parse(localStorage.getItem('cryptoDash'));
@@ -48,6 +50,7 @@ class App extends Component {
     ...checkFirstVisit()
   }
   componentDidMount = () => {
+    this.fetchHistorical();
     this.fetchCoins();
     this.fetchPrices();
   }
@@ -62,8 +65,24 @@ class App extends Component {
     } catch(e) {
       this.setState({ error: true });
     }
-    console.log(prices);
     this.setState({ prices });
+  }
+  fetchHistorical = async () => {
+    if(this.state.currentFavorite) {
+      let results = await this.historical();
+      let historical = [{
+        name: this.state.currentFavorite,
+        data: results.map((ticker, index) => [moment().subtract({ months: TIME_UNITS - index }).valueOf(), ticker.USD])
+      }];
+      this.setState({ historical });
+    }
+  }
+  historical = () => {
+    let promises = [];
+    for(let units = TIME_UNITS; units > 0; units--) {
+      promises.push(cc.priceHistorical(this.state.currentFavorite, ['USD'], moment().subtract({ months: units }).toDate()));
+    }
+    return Promise.all(promises);
   }
   prices = () => {
     let promises = [];
@@ -80,16 +99,19 @@ class App extends Component {
       <div>Welcome to CryptoDash, please select your favorite coins to begin.</div>
       );
     }
-  };
+  }
   confirmFavorites = () => {
     let currentFavorite = this.state.favorites[0];
     this.setState({
       firstVisit: false,
       page: 'dashboard',
       prices: null,
-      currentFavorite: this.state.favorites[0]
+      currentFavorite,
+      historical: null
+    }, () => {
+      this.fetchPrices();
+      this.fetchHistorical();
     });
-    this.fetchPrices();
     localStorage.setItem('cryptoDash', JSON.stringify({
       favorites: this.state.favorites,
       currentFavorite

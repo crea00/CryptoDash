@@ -55,7 +55,7 @@ export default function() {
         let tileProps = {
           dashboardFavorite: sym === self.state.currentFavorite,
           onClick: () => {
-            self.setState({ currentFavorite: sym });
+            self.setState({ currentFavorite: sym, historical: null }, self.fetchHistorical);
             localStorage.setItem('cryptoDash', JSON.stringify({
               ...JSON.parse(localStorage.getItem('cryptoDash')),
               currentFavorite: sym
@@ -96,7 +96,9 @@ export default function() {
         />
       </PaddingBlue>
       <PaddingBlue>
-        <ReactHighcharts config={HighchartsConfig.call(this)} />
+        {this.state.historical ? 
+          <ReactHighcharts config={HighchartsConfig.call(this)} /> 
+          : <div>Loading historical data </div> }
       </PaddingBlue>
     </ChartGrid>
     ]
