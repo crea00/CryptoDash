@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
 import styled from 'styled-components';
 import _ from 'lodash';
 import fuzzy from 'fuzzy';
@@ -9,6 +8,7 @@ import CoinList from './CoinList';
 import Search from './Search';
 import Dashboard from './Dashboard';
 import { ConfirmButton } from './Button';
+import './App.css';
 
 const cc = require('cryptocompare');
 

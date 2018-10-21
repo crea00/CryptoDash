@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import _ from 'lodash';
 import { 
   subtleBoxShadow, 
   lightBlueBackground, 
@@ -63,7 +62,6 @@ const DeleteIcon = styled.div`
 `;
 
 export default function(favorites=false) {
-  console.log('CoinSample', this.state.coinList['BTC']);
   let coinKeys = favorites ? 
     this.state.favorites : 
     ((this.state.filteredCoins && Object.keys(this.state.filteredCoins)) ||
@@ -82,6 +80,7 @@ export default function(favorites=false) {
               <CoinSymbol>{this.state.coinList[coinKey].Symbol}</CoinSymbol>}
           </CoinHeaderGrid>
           <img 
+            alt={coinKey}
             style={{ height: '50px' }} 
             src={`http://cryptocompare.com/${this.state.coinList[coinKey].ImageUrl}`}
           />
